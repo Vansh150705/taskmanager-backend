@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
 const taskRoutes = require('./routes/taskRoutes');
-const messageRoutes = require('./routes/messageRoutes'); // 👈 ADD THIS
+const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 
@@ -16,10 +16,10 @@ app.use(express.json());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
-app.use('/api/messages', messageRoutes); // 👈 ADD THIS
+app.use('/api/messages', messageRoutes);
 
 // MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/taskmanager', {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
