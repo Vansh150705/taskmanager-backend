@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const serverless = require('serverless-http');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -10,70 +9,54 @@ const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 
+// Middleware
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Global connection variable
-let isConnected = false;
-
-// Database connection function
-const connectDB = async () => {
-  if (isConnected) {
-    console.log('✅ Using existing MongoDB connection');
-    return;
-  }
-
-  try {
-    const db = await mongoose.connect("mongodb+srv://vansh150705:Napv3955@taskmanager.dsqgvkh.mongodb.net/?retryWrites=true&w=majority&appName=TaskManager", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-      maxPoolSize: 10, // Maintain up to 10 socket connections
-      bufferCommands: false, // Disable mongoose buffering
-      bufferMaxEntries: 0, // Disable mongoose buffering
-    });
-
-    isConnected = db.connections[0].readyState === 1;
-    console.log('✅ Connected to MongoDB');
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
-    throw error;
-  }
-};
-
+// Health check route
 app.get('/', (req, res) => {
-  res.send('✅ Server is running!');
+  res.json({ 
+    message: '✅ Task Manager API is running',
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Connect to database before handling API routes
-app.use('/api', async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    res.status(500).json({ message: 'Database connection failed', error: error.message });
-  }
-});
-
+// API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/messages', messageRoutes);
 
-// Handle MongoDB connection events
-mongoose.connection.on('connected', () => {
-  isConnected = true;
-  console.log('✅ Mongoose connected to MongoDB');
+// MongoDB Connection
+const connectDB = async () => {
+  try {
+    await mongoose.connect("mongodb+srv://vansh150705:Napv3955@taskmanager.dsqgvkh.mongodb.net/?retryWrites=true&w=majority&appName=TaskManager", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✅ Connected to MongoDB');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+// Connect to database
+connectDB();
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
 
-mongoose.connection.on('disconnected', () => {
-  isConnected = false;
-  console.log('❌ Mongoose disconnected from MongoDB');
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
-mongoose.connection.on('error', (err) => {
-  isConnected = false;
-  console.error('❌ MongoDB connection error:', err);
+// Start server
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-
-module.exports = serverless(app);
