@@ -13,7 +13,6 @@ const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// ✅ Add a root route for Vercel to quickly respond
 app.get('/', (req, res) => {
   res.send('✅ Server is running!');
 });
@@ -23,13 +22,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/messages', messageRoutes);
 
-// ✅ MongoDB connection (safe to keep outside handler)
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect("mongodb+srv://vansh150705:Napv3955@taskmanager.dsqgvkh.mongodb.net/?retryWrites=true&w=majority&appName=TaskManager", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => console.log('✅ Connected to MongoDB'))
 .catch((err) => console.error('❌ MongoDB connection error:', err));
 
-// ✅ Export serverless function for Vercel
 module.exports = serverless(app);

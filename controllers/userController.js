@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 // Generate JWT with user ID and role
 const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET , { expiresIn: '7d' }); // Use process.env.JWT_SECRET in production
+  return jwt.sign({ id, role }, "secret123" , { expiresIn: '7d' });
 };
 
 // Register a new user
