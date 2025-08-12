@@ -9,8 +9,14 @@ const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 
+// Allow all origins
+app.use(cors({
+  origin: '*',
+  methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization'
+}));
+
 // Middleware
-app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Health check route
@@ -62,3 +68,4 @@ const PORT = 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+ 
