@@ -7,7 +7,7 @@ const {
   updateTaskStatus,
   updateTaskById,
   deleteTaskById,
-  updateSubTaskStatus // ✅ New controller to update sub-task status
+  updateSubTaskStatus // New controller to update sub-task status
 } = require('../controllers/taskController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -24,13 +24,13 @@ router.get('/my-tasks', protect, getEmployeeTasks);
 // Update task status (employee)
 router.put('/:id/status', protect, updateTaskStatus);
 
-// ✅ Update sub-task status (employee)
+// Update sub-task status (employee)
 router.put('/:taskId/subtasks/:subTaskIndex/status', protect, updateSubTaskStatus);
 
-// ✅ Update task (admin only)
+// Update task (admin only)
 router.put('/:id', protect, updateTaskById);
 
-// ✅ Delete task (admin only)
+// Delete task (admin only)
 router.delete('/:id', protect, deleteTaskById);
 
 module.exports = router;

@@ -9,7 +9,7 @@ const createMessage = async (req, res) => {
     const task = await Task.findById(taskId);
     if (!task) return res.status(404).json({ message: "Task not found" });
 
-    // 🔄 Allow if sender is either the creator OR in the assignedTo array
+    // Allow if sender is either the creator OR in the assignedTo array
     const isAllowed = task.createdBy.equals(sender) || task.assignedTo.includes(sender);
 
     if (!isAllowed) {
@@ -44,7 +44,7 @@ const getMessages = async (req, res) => {
   }
 };
 
-// ✅ Full export
+// Full export
 module.exports = {
   createMessage,
   getMessages

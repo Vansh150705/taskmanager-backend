@@ -18,4 +18,4 @@ const protect = (req, res, next) => {
   }
 };
 
-module.exports = { protect }; // ✅ Fixed export
+module.exports = { protect }; // Fixed export

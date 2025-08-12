@@ -1,7 +1,7 @@
 const Task = require('../models/task');
 const User = require('../models/user');
 
-// ✅ Create Task with optional sub-tasks
+//  Create Task with optional sub-tasks
 exports.createTask = async (req, res) => {
   try {
     const { title, description, assignedTo, deadline, priority, subTasks } = req.body;
@@ -58,12 +58,12 @@ exports.createTask = async (req, res) => {
 
     res.status(201).json({ message: 'Task created successfully', task: fullTask });
   } catch (err) {
-    console.error('🔥 Error in createTask:', err);
+    console.error('Error in createTask:', err);
     res.status(500).json({ message: 'Failed to create task', error: err.message });
   }
 };
 
-// ✅ Get Tasks (Admin)
+//  Get Tasks (Admin)
 exports.getTasks = async (req, res) => {
   try {
     const tasks = await Task.find({ createdBy: req.user._id })
@@ -73,12 +73,12 @@ exports.getTasks = async (req, res) => {
 
     res.json(tasks);
   } catch (err) {
-    console.error('🔥 Error in getTasks:', err);
+    console.error('Error in getTasks:', err);
     res.status(500).json({ message: 'Failed to fetch tasks', error: err.message });
   }
 };
 
-// ✅ Get Tasks for Employee
+
 exports.getEmployeeTasks = async (req, res) => {
   try {
     const employeeId = req.user._id;
@@ -89,12 +89,12 @@ exports.getEmployeeTasks = async (req, res) => {
 
     res.json(tasks);
   } catch (err) {
-    console.error('🔥 Error in getEmployeeTasks:', err);
+    console.error('Error in getEmployeeTasks:', err);
     res.status(500).json({ message: 'Failed to fetch employee tasks', error: err.message });
   }
 };
 
-// ✅ Update Task Status (Employee) — No longer used when subtasks exist
+
 exports.updateTaskStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -108,12 +108,12 @@ exports.updateTaskStatus = async (req, res) => {
 
     res.json({ message: 'Task status updated successfully' });
   } catch (err) {
-    console.error('🔥 Error in updateTaskStatus:', err);
+    console.error('Error in updateTaskStatus:', err);
     res.status(500).json({ message: 'Failed to update task status', error: err.message });
   }
 };
 
-// ✅ Update Task (Admin Only)
+// Update Task (Admin Only)
 exports.updateTaskById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -165,12 +165,12 @@ exports.updateTaskById = async (req, res) => {
 
     res.json({ message: 'Task updated successfully', task: updatedTask });
   } catch (err) {
-    console.error('🔥 Error in updateTaskById:', err);
+    console.error('Error in updateTaskById:', err);
     res.status(500).json({ message: 'Failed to update task', error: err.message });
   }
 };
 
-// ✅ Delete Task (Admin Only)
+// Delete Task (Admin Only)
 exports.deleteTaskById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -185,12 +185,12 @@ exports.deleteTaskById = async (req, res) => {
     await task.deleteOne();
     res.json({ message: 'Task deleted successfully' });
   } catch (err) {
-    console.error('🔥 Error in deleteTaskById:', err);
+    console.error('Error in deleteTaskById:', err);
     res.status(500).json({ message: 'Failed to delete task', error: err.message });
   }
 };
 
-// ✅ Update Sub-task Status (Employee)
+// Update Sub-task Status (Employee)
 exports.updateSubTaskStatus = async (req, res) => {
   try {
     const { taskId, subTaskIndex } = req.params;
@@ -213,10 +213,10 @@ exports.updateSubTaskStatus = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this sub-task' });
     }
 
-    // ✅ Update sub-task status
+    // Update sub-task status
     subTask.status = status;
 
-    // ✅ Recalculate main task status based on sub-tasks
+    // Recalculate main task status based on sub-tasks
     const allCompleted = task.subTasks.every((sub) => sub.status === 'completed');
     const anyInProgress = task.subTasks.some((sub) => sub.status === 'in progress');
 
@@ -234,7 +234,7 @@ exports.updateSubTaskStatus = async (req, res) => {
 
     res.json({ message: 'Sub-task status updated successfully', task });
   } catch (err) {
-    console.error('🔥 Error in updateSubTaskStatus:', err);
+    console.error('Error in updateSubTaskStatus:', err);
     res.status(500).json({ message: 'Failed to update sub-task status', error: err.message });
   }
 };
