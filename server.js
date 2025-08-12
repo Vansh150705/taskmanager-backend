@@ -9,20 +9,14 @@ const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 
-// Allow all origins
-app.use(cors({
-  origin: '*',
-  methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization'
-}));
-
 // Middleware
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Health check route
 app.get('/', (req, res) => {
   res.json({
-    message: '✅ Task Manager API is running',
+    message: 'Task Manager API is running',
     status: 'healthy',
     timestamp: new Date().toISOString(),
   });
@@ -43,9 +37,9 @@ const connectDB = async () => {
         useUnifiedTopology: true,
       }
     );
-    console.log('✅ Connected to MongoDB');
+    console.log('Connected to MongoDB');
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
+    console.error('MongoDB connection error:', error);
     process.exit(1);
   }
 };
@@ -66,6 +60,5 @@ app.use('*', (req, res) => {
 
 const PORT = 8080;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
- 
