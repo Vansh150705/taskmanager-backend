@@ -15,10 +15,10 @@ app.use(express.json());
 
 // Health check route
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: '✅ Task Manager API is running',
     status: 'healthy',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -30,10 +30,13 @@ app.use('/api/messages', messageRoutes);
 // MongoDB Connection
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb+srv://vansh150705:Napv3955@taskmanager.dsqgvkh.mongodb.net/?retryWrites=true&w=majority&appName=TaskManager", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(
+      "mongodb+srv://vansh150705:Napv3955@taskmanager.dsqgvkh.mongodb.net/?retryWrites=true&w=majority&appName=TaskManager",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
     console.log('✅ Connected to MongoDB');
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
@@ -55,8 +58,7 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Start server
-const PORT = 5000;
+const PORT = 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-});                                                    
+});
