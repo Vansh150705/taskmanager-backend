@@ -31,7 +31,7 @@ app.use('/api/messages', messageRoutes);
 const connectDB = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://vansh150705:Napv3955@taskmanager.dsqgvkh.mongodb.net/?retryWrites=true&w=majority&appName=TaskManager",
+      "mongodb+srv://vansh150705:NNapv3955@taskmanager.dsqgvkh.mongodb.net/?retryWrites=true&w=majority&appName=TaskManager",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
