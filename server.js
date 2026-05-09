@@ -9,11 +9,37 @@ const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 
-// Middleware
-app.use(cors({ origin: '*' }));
-app.use(express.json());
+// ── CORS — must be FIRST, before everything else ──
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://office-task-manager.vercel.app',
+];
 
-// Health check route
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(null, true); // allow all for now
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 200,
+}));
+
+// Handle preflight requests for ALL routes
+app.options('*', cors());
+
+// ── Body Parser ──
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ── Health check route ──
 app.get('/', (req, res) => {
   res.json({
     message: 'Task Manager API is running',
@@ -22,12 +48,12 @@ app.get('/', (req, res) => {
   });
 });
 
-// API Routes
+// ── API Routes ──
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/messages', messageRoutes);
 
-// MongoDB Connection
+// ── MongoDB Connection ──
 const connectDB = async () => {
   try {
     await mongoose.connect(
@@ -44,21 +70,20 @@ const connectDB = async () => {
   }
 };
 
-// Connect to database
 connectDB();
 
-// Error handling middleware
+// ── Error handling middleware ──
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
 
-// 404 handler
+// ── 404 handler ──
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
